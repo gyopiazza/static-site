@@ -1,5 +1,5 @@
 {
-  "name": "metalsmith-demo",
+  "name": "static-site",
   "version": "1.0.0",
   "description": "",
   "main": "build.js",
@@ -8,15 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JimmiLee/metalsmith-demo-empty.git"
+    "url": "git+https://github.com/gyopiazza/static-site.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JimmiLee/metalsmith-demo-empty/issues"
+    "url": "https://github.com/gyopiazza/static-site/issues"
   },
-  "homepage": "https://github.com/JimmiLee/metalsmith-demo-empty#readme",
   "dependencies": {
     "handlebars": "^4.0.11",
     "metalsmith": "^2.3.0",
