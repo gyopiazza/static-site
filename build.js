@@ -6,9 +6,9 @@ const permalinks = require('metalsmith-permalinks')
 
 Metalsmith(__dirname)
     .use(collections({
-        pages: {
-            pattern: 'pages/*.md'
-        },
+        // pages: {
+        //     pattern: 'pages/*.md'
+        // },
         articles: {
             pattern: 'articles/*.md',
             sortBy: 'date'
