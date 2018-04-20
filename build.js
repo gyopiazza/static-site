@@ -7,10 +7,10 @@ const permalinks = require('metalsmith-permalinks')
 Metalsmith(__dirname)
     .use(collections({
         pages: {
-            pattern: 'content/pages/*.md'
+            pattern: 'pages/*.md'
         },
         articles: {
-            pattern: 'content/articles/*.md',
+            pattern: 'articles/*.md',
             sortBy: 'date'
         }
     }))
