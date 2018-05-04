@@ -1,6 +1,6 @@
 const Metalsmith = require('metalsmith')
 const markdown = require('metalsmith-markdown')
-const templates = require('metalsmith-templates')
+const layouts = require('metalsmith-layouts')
 const collections = require('metalsmith-collections')
 const permalinks = require('metalsmith-permalinks')
 
@@ -18,12 +18,9 @@ Metalsmith(__dirname)
     .use(permalinks({
         pattern: ':collections/:title'
     }))
-    .use(templates({
+    .use(layouts({
         engine: 'handlebars',
-        partials: {
-            header: 'partials/header',
-            footer: 'partials/footer'
-        }
+        directory: 'layouts'
     }))
     .destination('./build')
     .build(function (err) { if (err) console.log(err) })
