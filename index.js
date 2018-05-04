@@ -44,58 +44,62 @@ class BuildMetalsmith {
       var metalsmith = Metalsmith(__dirname)
         .source('src')
         .destination('build');
+
         if (watch) {
           metalsmith.use(browserSync({
             server : "build",
+            startPath: "/index.html",
             files  : ["src/**/*", "layouts/**/*.html", "partials/**/*.html", 'locales/**/*', 'assets/**/*']
           }))
         }
-        metalsmith.clean(true)
-        .use(sass({
-          outputStyle: 'compressed',
-          functions: assetFunctions({
-            images_path: 'src/assets',
+
+        metalsmith
+          .clean(true)
+          .use(sass({
+            outputStyle: 'compressed',
+            functions: assetFunctions({
+              images_path: 'src/assets',
+            })
+          }))
+          .use(autoprefixer())
+          .use(dataMarkdown({
+            removeAttributeAfterwards: true
+          }))
+          .use(i18n({
+            default: 'en',
+            locales: ['en', 'de'],
+            directory: 'locales'
+          }))
+          .use(multiLanguage({
+            default: 'en',
+            locales: ['en', 'de']
+          }))
+          .use(permalinks({
+            relative: false,
+            pattern: ':locale/:slug/'
+          }))
+          .use(rootPath())
+          .use(layouts({
+            engine: 'handlebars',
+            partials: 'partials'
+          }))
+          .use(inlineSource({
+            rootpath: './src/'
+          }))
+          .use(inPlace({
+            directory: 'src',
+            pattern: '*.html'
+          }))
+          .use(htmlMinifier())
+          .build((err) => {
+            if (err) {
+              reject(err);
+              throw err;
+            } else {
+              resolve();
+              console.log(`Successfully build metalsmith - ${new Date()}`);
+            }
           })
-        }))
-        .use(autoprefixer())
-        .use(dataMarkdown({
-          removeAttributeAfterwards: true
-        }))
-        .use(i18n({
-          default: 'en',
-          locales: ['en', 'de'],
-          directory: 'locales'
-        }))
-        .use(multiLanguage({
-          default: 'en',
-          locales: ['en', 'de']
-        }))
-        .use(permalinks({
-          relative: false,
-          pattern: ':locale/:slug/'
-        }))
-        .use(rootPath())
-        .use(layouts({
-          engine: 'handlebars',
-          partials: 'partials'
-        }))
-        .use(inlineSource({
-          rootpath: './src/'
-        }))
-        .use(inPlace({
-          directory: 'src',
-          pattern: '*.html'
-        }))
-        .use(htmlMinifier())
-        .build((err) => {
-          if (err) {
-            reject(err);
-            throw err;
-          } else {
-            resolve();
-            console.log(`Successfully build metalsmith - ${new Date()}`);
-          }
-        })
     });
   }
 
