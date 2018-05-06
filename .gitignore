@@ -1,4 +1,1 @@
-node_modules/
-build/
-npm-debug.log
-.vscode/
+node_modules

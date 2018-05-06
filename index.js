@@ -1,122 +1,138 @@
-const glob = require('glob')
-const handlebars = require('handlebars')
 const Metalsmith = require('metalsmith')
+const metalsmith = Metalsmith(__dirname)
+const collections = require('metalsmith-collections')
+const localizeCollection = require('metalsmith-localize-collection')
+const archives = require('metalsmith-collections-archive')
+const markdown = require('metalsmith-markdown')
 const layouts = require('metalsmith-layouts')
-const assets = require('metalsmith-static')
-const sass = require('metalsmith-sass')
-const dataMarkdown = require('metalsmith-data-markdown')
-const browserSync = require('metalsmith-browser-sync')
-const autoprefixer = require('metalsmith-autoprefixer')
-const i18n = require('metalsmith-i18n')
-const inPlace = require('metalsmith-in-place')
-const multiLanguage = require('metalsmith-multi-language')
-const rootPath = require('metalsmith-rootpath')
-const htmlMinifier = require('metalsmith-html-minifier')
 const permalinks = require('metalsmith-permalinks')
-const assetFunctions = require('node-sass-asset-functions')
-const inlineSource = require('metalsmith-inline-source')
+const slug = require('metalsmith-slug')
+const languages = require('metalsmith-multi-language')
+const i18n = require('metalsmith-i18n')
+const browserSync = require('metalsmith-browser-sync')
 
-class BuildMetalsmith {
-  constructor () {
-    this.prepareHandlebarsHelper();
-    let watch = false;
-    let prod = false;
-    process.argv.forEach(function (val) {
-      if (val === '--serve') {
-        watch = true;
-      }
-      if (val === '--prod') {
-        prod = true;
-      }
-    });
 
-    this.build(watch)
-    .then(() => {
-      if (prod) {
-        //do something in prod mode
-      }
-    });
+function myPlugin(opts) {
 
-  }
+  // return the function to be given to the `.use` call.
+  return function (files, metalsmith, done) {
 
-  build(watch = false) {
-    return new Promise((resolve, reject) => {
-      var metalsmith = Metalsmith(__dirname)
-        .source('src')
-        .destination('build');
+    for (let file in files) {
+      console.log(file, files[file])
+    }
 
-        if (watch) {
-          metalsmith.use(browserSync({
-            server : "build",
-            startPath: "/index.html",
-            files  : ["src/**/*", "layouts/**/*.html", "partials/**/*.html", 'locales/**/*', 'assets/**/*']
-          }))
-        }
+    // ...do something with `files` here...
 
-        metalsmith
-          .clean(true)
-          .use(sass({
-            outputStyle: 'compressed',
-            functions: assetFunctions({
-              images_path: 'src/assets',
-            })
-          }))
-          .use(autoprefixer())
-          .use(dataMarkdown({
-            removeAttributeAfterwards: true
-          }))
-          .use(i18n({
-            default: 'en',
-            locales: ['en', 'de'],
-            directory: 'locales'
-          }))
-          .use(multiLanguage({
-            default: 'en',
-            locales: ['en', 'de']
-          }))
-          .use(permalinks({
-            relative: false,
-            pattern: ':locale/:slug/'
-          }))
-          .use(rootPath())
-          .use(layouts({
-            engine: 'handlebars',
-            partials: 'partials'
-          }))
-          .use(inlineSource({
-            rootpath: './src/'
-          }))
-          .use(inPlace({
-            directory: 'src',
-            pattern: '*.html'
-          }))
-          .use(htmlMinifier())
-          .build((err) => {
-            if (err) {
-              reject(err);
-              throw err;
-            } else {
-              resolve();
-              console.log(`Successfully build metalsmith - ${new Date()}`);
-            }
-          })
-    });
-  }
-
-  prepareHandlebarsHelper () {
-    // add custom helpers to handlebars
-    // https://github.com/superwolff/metalsmith-layouts/issues/63
-    //
-    // using the global handlebars instance
-    glob.sync(`${__dirname}/helpers/*.js`).forEach((fileName) => {
-      const helper = fileName.split('/').pop().replace('.js', '')
-
-      handlebars.registerHelper(
-        helper,
-        require(fileName)
-      )
-    })
+    done()
   }
 }
 
-new BuildMetalsmith();
+console.time('build');
+
+// Environment
+let watch = false;
+let prod = false;
+process.argv.forEach(function (val) {
+  if (val === '--serve') {
+    watch = true;
+  }
+  if (val === '--prod') {
+    prod = true;
+  }
+});
+
+// Config
+const DEFAULT_LOCALE = 'en'
+const LOCALES = ['en', 'es']
+const DIR = {
+  base: __dirname + '/',
+  //   lib: __dirname + '/lib/',
+  source: __dirname + '/content/',
+  dest: __dirname + '/build/'
+}
+
+// Watch for file changes and hot-reload in development mode
+if (watch) {
+  metalsmith.use(browserSync({
+    server: "build",
+    startPath: "/index.html",
+    files: ["content/**/*", "layouts/**/*.html", "partials/**/*.html"],
+    reloadDelay: 100
+  }))
+}
+
+// Initialize the build
+metalsmith
+  // Metadata globally available in the templates
+  .metadata({
+    title: "My Static Site & Blog",
+    description: "It's about saying »Hello« to the World.",
+    url: "http://www.mywebsite.io/"
+  })
+  .source(DIR.source)
+  .destination(DIR.dest)
+  .clean(true)
+  .use(languages({
+    default: DEFAULT_LOCALE,
+    locales: LOCALES
+  }))
+  .use(i18n({
+    default: DEFAULT_LOCALE,
+    locales: LOCALES,
+    directory: 'locales'
+  }))
+  // .use(collections({
+  //   posts: {
+  //     pattern: 'posts/*/!(index).md',
+  //     sortBy: 'date',
+  //     reverse: true
+  //   }
+  // }))
+  // .use(localizeCollection('posts'))
+  .use(collections({
+    posts_en: 'posts/en/*.md',
+    posts_es: 'posts/es/*.md',
+    products_en: 'products/en/*.md',
+    products_es: 'products/es/*.md'
+  }))
+  // .use(myPlugin())
+  // .use(archives({
+  //   layout: 'archive.html',
+  //   metadata: false,
+  //   rootLevel: false
+  // }))
+  .use(slug({
+    property: 'title',
+    patterns: ['*.md'] // Defaults to all files
+  }))
+  .use(markdown())
+  .use(permalinks({
+    relative: false,
+    pattern: ':locale/:slug/',
+    linksets: [
+      {
+        match: { collection: 'posts_en' },
+        pattern: ':locale/posts/:slug/'
+      },
+      {
+        match: { collection: 'posts_es' },
+        pattern: ':locale/articulos/:slug/'
+      },
+      {
+        match: { collection: 'products_en' },
+        pattern: ':locale/products/:slug/'
+      },
+      {
+        match: { collection: 'products_es' },
+        pattern: ':locale/productos/:slug/'
+      }
+    ]
+  }))
+  .use(layouts({
+    engine: 'handlebars',
+    directory: 'layouts'
+  }))
+  .build(function(err, files) {
+    console.timeEnd('build')
+    if (err) { throw err }
+  })

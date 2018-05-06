@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+</head>
+<body>
+  <header>
+    <p>
+      <a href="/">Home</a>
+    </p>
+  </header>
+  <h1>{{ title }}</h1>
+  <p>{{ description }}</p>
+
+  <article>
+    {{#if children}}
+    <section>
+      <ul>
+        {{#each children}}
+        <li>
+          <a href="/{{ path }}" title="{{ title }}">{{ title }}</li>
+        {{/each}}
+      </ul>
+    </section>
+    {{/if}}
+    <section>
+      {{#unless children}}
+      <h2>{{ title }}</h2>
+      {{/unless}}
+      <ul>
+        {{#each posts}}
+        <li>
+          <a href="/{{ path }}" title="{{ title }}">{{ title }}</li>
+        {{/each}}
+      </ul>
+    </section>
+  </article>
+
+
+  <footer>
+    {{#each locales}}
+      {{this}}
+    {{/each}}
+  </footer>
+
+</body>
+</html>

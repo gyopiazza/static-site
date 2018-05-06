@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+</head>
+<body>
+  <header>
+    <p>
+      <a href="/">Home</a>
+    </p>
+  </header>
+  <h2>Welcome to the home!</h2>
+  <h1>{{ title }}</h1>
+  <p>{{ description }}</p>
+
+  {{{ contents }}}
+
+  <footer>
+    {{__ 'switch_language_to'}}
+
+    {{#each locales}}
+      {{this}}
+    {{/each}}
+  </footer>
+
+</body>
+</html>
