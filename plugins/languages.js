@@ -15,16 +15,16 @@ const getLocale = function (file, locales, filePattern, pathPattern) {
 }
 
 const getAltFilename = function (file, fromLocale, toLocale, pathPattern) {
-    var ext = path.extname(file);
+    var ext = path.extname(file)
 
-    // Locale in the path.
+    // Locale in the path
     if (pathPattern.test(file)) {
-      var replacementString = file.match(pathPattern)[0].replace(fromLocale, toLocale);
-      return file.replace(pathPattern, replacementString);
+      var replacementString = file.match(pathPattern)[0].replace(fromLocale, toLocale)
+      return file.replace(pathPattern, replacementString)
     }
 
-    // Locale in the filename.
-    return file.replace('_'+ fromLocale + ext, '_'+ toLocale + ext);
+    // Locale in the filename
+    return file.replace('_'+ fromLocale + ext, '_'+ toLocale + ext)
 }
 
 module.exports = (config) => {
@@ -59,6 +59,19 @@ module.exports = (config) => {
                     file.translations[file.locale] = file.src
                 }
             })
+
+            // Index handling
+            // Default locale will go in 'index.html'
+            // Other index-es in '/{locale}/index.html'
+            // if (/^index/.test(file.name)) {
+            //     if (file.locale === generator.globals.defaultLocale) {
+            //         file.name = 'index'
+            //         // files['index'+ ext] = file;
+            //     } else {
+            //         file.path = file.locale + '/';
+            //         files[file.locale +'/index'+ file.ext] = file;
+            //     }
+            // }
 
             // Adding a helper function to the globals, to be used in the layouts
             generator.globals.__ = (str) => str.toUpperCase()

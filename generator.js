@@ -65,25 +65,6 @@ function Generator(config) {
   }
 
   /**
-   * Set a global variable
-   *
-   * @param {string} key The variable name
-   * @param {any} value The variable value
-   */
-  this.set = (key, value) => {
-    this.globals[key] = value
-  }
-
-  /**
-   * Get a global variable
-   *
-   * @param {string} key The variable name
-   */
-  this.get = (key) => {
-    return this.globals[key] || null
-  }
-
-  /**
    * Read, transform and write a file
    *
    * @param {*} filePath
@@ -108,9 +89,6 @@ function Generator(config) {
         content
       }
 
-      // Compose the default destination path
-      file.output = path.join(this.config.output, file.uri, file.name + '.' + file.ext)
-
       // The current file is passed to all the registered plugins
       for (let plugin of this.config.plugins) {
         if (plugin && plugin.run) {
@@ -124,6 +102,9 @@ function Generator(config) {
           }
         }
       }
+
+      // Compose the destination path
+      file.output = path.join(this.config.output, file.uri, file.name + '.' + file.ext)
 
       // Create the destination folder if it doesn't exist
       utils.ensureDirectoryExistence(file.output)

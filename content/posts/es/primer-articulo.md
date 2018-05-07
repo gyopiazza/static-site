@@ -1,5 +1,6 @@
 ---
 title: Primer artículo
+collection: posts
 slug: mi-primer-articulo
 date: 2012-08-20
 layout: post.html

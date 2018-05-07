@@ -1,6 +1,15 @@
 const fs = require('fs')
 const path = require('path')
 
+const ensureDirectoryExistence = function (filePath) {
+  var dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+}
+
 function generateRandomFiles() {
   const totalFiles = 9000
 
@@ -27,7 +36,7 @@ function generateRandomFiles() {
 }
 
 function importMockData() {
-  const filePath = 'MOCK_DATA.json'
+  const filePath = 'MOCK_DATA_LIGHT.json'
   let data = fs.readFileSync(filePath, 'utf8')
   data = JSON.parse(data)
 
@@ -37,6 +46,7 @@ function importMockData() {
     let content = `---
 title: ${item.brand} - ${item.model}
 slug: ${item.brand.replace(' ', '')}-${item.model.replace(' ', '')}
+collection: products
 price: ${item.price}
 brand: ${item.brand}
 model: ${item.model}
@@ -50,13 +60,8 @@ This is some content... ${item.brand} - ${item.model}
     let destEN = 'content/products/en/' + item.brand + '/' + fileName
     let destES = 'content/products/es/' + item.brand + '/' + fileName
 
-    if (!fs.existsSync(path.dirname(destEN))) {
-      fs.mkdirSync(path.dirname(destEN))
-    }
-
-    if (!fs.existsSync(path.dirname(destES))) {
-      fs.mkdirSync(path.dirname(destES))
-    }
+    ensureDirectoryExistence(destEN)
+    ensureDirectoryExistence(destES)
 
     fs.writeFile(destEN, content, function (err) {
       if (err) {
@@ -74,7 +79,7 @@ This is some content... ${item.brand} - ${item.model}
 
 
 importMockData()
-importMockData()
-importMockData()
+// importMockData()
+// importMockData()
 // importMockData()
 // importMockData()

@@ -8,84 +8,79 @@ const path = require('path')
  */
 
 function params(pattern) {
-    var matcher = /:(\w+)/g
-    var ret = []
-    var m
-    while (m = matcher.exec(pattern)) ret.push(m[1])
-    return ret
+  var matcher = /:(\w+)/g
+  var ret = []
+  var m
+  while (m = matcher.exec(pattern)) ret.push(m[1])
+  return ret
 }
 
 function replace(str, data) {
-    if (typeof str === 'string' && (data instanceof Array)) {
-        return str.replace(/({\d})/g, function(i) {
-            return data[i.replace(/{/, '').replace(/}/, '')]
-        })
-    } else if (typeof str === 'string' && (data instanceof Object)) {
-        for (let key in data) {
-            return str.replace(/({([^}]+)})/g, function(i) {
-                let key = i.replace(/{/, '').replace(/}/, '')
-                if (!data[key]) {
-                    return i
-                }
+  for (let key in data) {
+    return str.replace(/({([^}]+)})/g, function (i) {
+      let key = i.replace(/{/, '').replace(/}/, '')
+      if (!data[key]) {
+        return i
+      }
 
-                return data[key]
-            })
-        }
-    } else {
-        return false
-    }
+      return data[key]
+    })
+  }
+
+  return false
 }
 
-const get = function(o, s) {
-    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-    s = s.replace(/^\./, '');           // strip a leading dot
-    var a = s.split('.');
-    for (var i = 0, n = a.length; i < n; ++i) {
-        var k = a[i];
-        if (k in o) {
-            o = o[k];
-        } else {
-            return;
-        }
-    }
-    return o;
+const propsMatch = (obj, props) => {
+  // If no match rules are given, pass
+  if (!props) {
+    return false
+  }
+
+  let match = false
+
+  props.forEach(prop => {
+    let keys = Object.keys(prop)
+    let values = Object.values(prop)
+    let matches = 0
+
+    keys.forEach((key, index) => {
+      if (obj[key] && obj[key] === values[index]) {
+        matches++
+      }
+    })
+
+    // Make sure that the all the keys rules are met
+    match = matches === keys.length
+  })
+
+  return match
 }
 
 module.exports = (config) => {
-    config = Object.assign({}, {
-        match: '.md',
-        routes: [{
-            match: [{ collection: 'products' }], // match any property and value
-            pattern: '{locale}/posts/{slug}'
-        }],
-    }, config)
+  config = Object.assign({}, {
+    match: '.md',
+    routes: [],
+  }, config)
 
-    return {
-        name: 'permalink',
-        async run(file, files, globals, generator) {
+  return {
+    name: 'permalink',
+    async run(file, files, globals, generator) {
 
-            if (path.extname(file.src) !== '.md') {
-                return file
-            }
+      if (path.extname(file.src) !== config.match) {
+        return file
+      }
 
-            // Loop through the ruoutes, the first one that matches the 'match' properties
-            // is used for the file route
-            // console.log(file.locale, file.slug || file.title, file.src)
-            // if (!file.slug) {
-            //     console.log(file)
-            // }
+      file.slug = file.slug || file.name
 
-            // console.log(replace(config.routes[0].pattern, file))
-
-            // let params = params(config.routes[0].pattern)
-
-            // p.forEach(param => {
-
-            // })
-
-            // file.uri = path.join(file.uri, )
-
-            return file
+      // Loop through the routes, the last one that matches is used for the file route
+      config.routes.forEach(route => {
+        if (propsMatch(file, route.match)) {
+          file.uri = replace(route.pattern, file)
+          file.name = 'index'
         }
+      })
+
+      return file
     }
+  }
 }
