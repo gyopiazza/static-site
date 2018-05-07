@@ -8,7 +8,7 @@ module.exports = (config) => {
   }, config)
 
   return {
-    name: 'generator-handlebars',
+    name: 'handlebars',
     async run(file, files, globals, generator) {
       let layoutFile = generator.config.layouts + (file.layout || generator.config.defaultLayout)
       let layoutContent = fs.readFileSync(layoutFile, 'utf8')
@@ -17,11 +17,7 @@ module.exports = (config) => {
       // console.log(generator.globals)
 
       // The variables that will be available in the template
-      let layoutData = Object.assign({}, generator.globals, {
-        meta: file.meta,
-        content: file.content
-      })
-
+      let layoutData = Object.assign({}, generator.globals, file)
 
       // Render the content using the layout and the data
       file.content = layout(layoutData)

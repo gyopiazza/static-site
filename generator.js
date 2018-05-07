@@ -29,12 +29,12 @@ function Generator(config) {
 
   this.config = Object.assign({}, {
     match: '**/*.md',
-    src: root + '/content/products/',
+    src: root + '/content/',
     output: root + '/build/',
     ignore: ['.', '..', '.DS_Store'],
     layouts: root + '/layouts/',
     defaultLayout: 'default.html',
-    concurrency: 50,
+    concurrency: 100,
     plugins: [],
     encoding: 'utf8'
   }, config)
@@ -45,21 +45,42 @@ function Generator(config) {
 
   /**
    * Prepare the queue processing
+   * Each element added to the queue will be processed here
+   *
    */
   this.queue = async.queue((file, done) => {
-    this.transform(file, (transformedFile) => {
-      done()
+    this.transform(file, transformedFile => {
+      return done()
     })
   }, this.config.concurrency)
 
   /**
    * Add a plugin to the pipeline
    *
-   * @param {*} plugin
+   * @param {object} plugin
    */
   this.use = (plugin) => {
     this.config.plugins.push(plugin)
     return this
+  }
+
+  /**
+   * Set a global variable
+   *
+   * @param {string} key The variable name
+   * @param {any} value The variable value
+   */
+  this.set = (key, value) => {
+    this.globals[key] = value
+  }
+
+  /**
+   * Get a global variable
+   *
+   * @param {string} key The variable name
+   */
+  this.get = (key) => {
+    return this.globals[key] || null
   }
 
   /**
@@ -84,8 +105,7 @@ function Generator(config) {
         name: path.basename(filePath, path.extname(filePath)),
         uri: path.dirname(filePath.replace(this.config.src, '')),
         ext: 'html',
-        content,
-        meta: {}
+        content
       }
 
       // Compose the default destination path
@@ -94,14 +114,13 @@ function Generator(config) {
       // The current file is passed to all the registered plugins
       for (let plugin of this.config.plugins) {
         if (plugin && plugin.run) {
-          console.log(this.globals)
           try {
             file = await plugin.run(file, this.files, this.globals, this)
           } catch(e) {
-            // console.log('-------------------')
-            // console.log('Error with the file:', file.src)
-            // console.log('Error with the plugin:', plugin.name)
-            // console.trace(e)
+            console.log('-------------------')
+            console.log('Error with the file:', file.src)
+            console.log('Error with the plugin:', plugin.name)
+            console.trace(e)
           }
         }
       }
@@ -112,7 +131,7 @@ function Generator(config) {
       // Write the file content to the destination folder
       fs.writeFile(file.output, file.content, this.config.encoding, (err) => {
         if (err) throw err
-        done(file)
+        return done(file)
       })
     })
 

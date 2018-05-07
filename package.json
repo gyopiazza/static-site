@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "async": "^2.6.0",
+    "cloth": "^2.1.0",
     "glob": "^7.1.2",
     "gray-matter": "^4.0.1",
     "handlebars": "^4.0.11",
@@ -21,6 +22,7 @@
     "npm": "^6.0.0",
     "oboe": "^2.1.4",
     "stream-json": "^0.6.1",
+    "webworker-threads": "^0.7.13",
     "workerpool": "^2.3.0"
   }
 }

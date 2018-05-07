@@ -7,14 +7,17 @@ module.exports = (config) => {
     }, config)
 
     return {
-        async run(file, files, state, generator) {
+        async run(file, files, globals, generator) {
             if (path.extname(file.src) !== '.md') {
                 return file
             }
 
             let fm = frontmatter(file.content)
-            file.meta = fm.data
-            file.content = fm.content
+            // file.meta = fm.data
+            // file.content = fm.content
+
+            file = Object.assign({}, file, fm.data, { content: fm.content })
+
             return file
         }
     }

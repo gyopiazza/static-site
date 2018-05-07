@@ -36,7 +36,7 @@ module.exports = (config) => {
     }, config)
 
     return {
-        name: 'generator-languages',
+        name: 'languages',
         async init(files, globals, generator) {
             generator.globals.locales = config.locales
             generator.globals.defaultLocale = config.defaultLocale
@@ -53,10 +53,10 @@ module.exports = (config) => {
             file.translations = {}
 
             generator.globals.locales.forEach(function (locale) {
-                if (locale != files[file].locale) {
-                    file.translations[locale] = files[getAltFilename(file, file.locale, locale, config.pathPattern)];
+                if (locale != file.locale) {
+                    file.translations[locale] = files[getAltFilename(file.src, file.locale, locale, config.pathPattern)];
                 } else {
-                    file.translations[file.locale] = file
+                    file.translations[file.locale] = file.src
                 }
             })
 

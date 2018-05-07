@@ -9,10 +9,12 @@ module.exports = (config) => {
 
     return {
         async init(files, globals, generator) {
+            console.log('Concurrency:', generator.config.concurrency)
             console.log('Files found:', files.length)
+            console.log('Processing the files...')
         },
         async run(file, files, globals, generator) {
-            counter++
+            ++counter
             return file
         },
         async end(files, globals, generator) {
