@@ -58,20 +58,26 @@ module.exports = (config) => {
                 } else {
                     file.translations[file.locale] = file.src
                 }
+
+                if (file.name.endsWith('_' + locale)) {
+                    file.name = file.name.slice(0, -locale.length)
+                }
             })
 
             // Index handling
             // Default locale will go in 'index.html'
             // Other index-es in '/{locale}/index.html'
-            // if (/^index/.test(file.name)) {
-            //     if (file.locale === generator.globals.defaultLocale) {
-            //         file.name = 'index'
-            //         // files['index'+ ext] = file;
-            //     } else {
-            //         file.path = file.locale + '/';
-            //         files[file.locale +'/index'+ file.ext] = file;
-            //     }
-            // }
+            if (/^index/.test(file.name)) {
+                if (file.locale === generator.globals.defaultLocale) {
+                    file.uri = file.uri.replace(file.locale + '/', '')
+                    file.name = 'index'
+                    // files['index'+ ext] = file;
+                } else {
+                    file.name = 'index'
+                    // file.path = file.locale + '/';
+                    // files[file.locale +'/index'+ file.ext] = file;
+                }
+            }
 
             // Adding a helper function to the globals, to be used in the layouts
             generator.globals.__ = (str) => str.toUpperCase()

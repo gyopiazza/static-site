@@ -6,6 +6,7 @@ const markdown = require('./plugins/markdown')
 const handlebars = require('./plugins/handlebars')
 const languages = require('./plugins/languages')
 const permalinks = require('./plugins/permalinks')
+const slug = require('./plugins/slug')
 
 const generator = new Generator()
 
@@ -16,6 +17,7 @@ generator.use(languages({
 }))
 // generator.use(collections()) // Just add the 'collection' attribute to a set of matches
 generator.use(frontmatter())
+generator.use(slug())
 generator.use(markdown())
 generator.use(handlebars())
 generator.use(permalinks({
@@ -39,10 +41,6 @@ generator.use(permalinks({
     {
       match: [{ collection: 'posts', locale: 'es' }],
       pattern: '{locale}/articulos/{slug}'
-    },
-    {
-      match: [{ culo: 'now' }],
-      pattern: '{locale}/culo/{culo}'
     }
   ]
 }))

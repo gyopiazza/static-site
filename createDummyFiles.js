@@ -36,7 +36,7 @@ function generateRandomFiles() {
 }
 
 function importMockData() {
-  const filePath = 'MOCK_DATA_LIGHT.json'
+  const filePath = 'MOCK_DATA.json'
   let data = fs.readFileSync(filePath, 'utf8')
   data = JSON.parse(data)
 
@@ -79,7 +79,5 @@ This is some content... ${item.brand} - ${item.model}
 
 
 importMockData()
-// importMockData()
-// importMockData()
-// importMockData()
-// importMockData()
+importMockData()
+importMockData()

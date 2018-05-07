@@ -74,9 +74,11 @@ module.exports = (config) => {
 
       // Loop through the routes, the last one that matches is used for the file route
       config.routes.forEach(route => {
-        if (propsMatch(file, route.match)) {
-          file.uri = replace(route.pattern, file)
-          file.name = 'index'
+        if (file.name !== 'index') {
+          if (!route.match || propsMatch(file, route.match)) {
+            file.uri = replace(route.pattern, file)
+            file.name = 'index'
+          }
         }
       })
 
