@@ -138,7 +138,8 @@ module.exports = (config) => {
     return {
         name: 'slug',
         async run(file, files, state, generator) {
-            file.slug = file[config.property] || file.title || file.name
+						file.slug = file[config.property] || file.title || file.name
+
             file.slug = slug(file.slug)
 
             if (config.lowerCase) {

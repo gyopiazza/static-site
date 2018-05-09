@@ -15,7 +15,7 @@ function params(pattern) {
   return ret
 }
 
-function replace(str, data) {
+function pattern(str, data) {
   for (let key in data) {
     return str.replace(/({([^}]+)})/g, function (i) {
       let key = i.replace(/{/, '').replace(/}/, '')
@@ -59,28 +59,28 @@ const propsMatch = (obj, props) => {
 module.exports = (config) => {
   config = Object.assign({}, {
     match: '.md',
+    index: 'index',
     routes: [],
   }, config)
 
   return {
-    name: 'permalink',
+    name: 'permalinks',
     async run(file, files, globals, generator) {
-
       if (path.extname(file.src) !== config.match) {
         return file
       }
 
-      file.slug = file.slug || file.name
-
       // Loop through the routes, the last one that matches is used for the file route
       config.routes.forEach(route => {
-        if (file.name !== 'index') {
-          if (!route.match || propsMatch(file, route.match)) {
-            file.uri = replace(route.pattern, file)
-            file.name = 'index'
+        if (!route.match || propsMatch(file, route.match)) {
+          if (file.name !== config.index) {
+            file.uri = pattern(route.pattern, file)
           }
         }
       })
+
+      // Set the file name to index for
+      file.name = config.index
 
       return file
     }

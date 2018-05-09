@@ -59,6 +59,7 @@ module.exports = (config) => {
                     file.translations[file.locale] = file.src
                 }
 
+                // Remove the locale from the file name (eg: '_en')
                 if (file.name.endsWith('_' + locale)) {
                     file.name = file.name.slice(0, -locale.length)
                 }
@@ -71,11 +72,9 @@ module.exports = (config) => {
                 if (file.locale === generator.globals.defaultLocale) {
                     file.uri = file.uri.replace(file.locale + '/', '')
                     file.name = 'index'
-                    // files['index'+ ext] = file;
                 } else {
+                    file.uri = file.locale + '/'
                     file.name = 'index'
-                    // file.path = file.locale + '/';
-                    // files[file.locale +'/index'+ file.ext] = file;
                 }
             }
 

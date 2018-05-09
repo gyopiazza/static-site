@@ -2,4 +2,4 @@
 layout: home.html
 locale: en
 ---
-This is the home
+This is the about page

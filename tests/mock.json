@@ -1,0 +1,96 @@
+{
+  "routes": [
+    {
+      "match": [{
+        "collection": "products",
+        "locale": "en"
+      }],
+      "pattern": "{locale}/products/{slug}"
+    },
+    {
+      "match": [{
+        "collection": "products",
+        "locale": "es"
+      }],
+      "pattern": "{locale}/productos/{slug}"
+    },
+    {
+      "match": [{
+        "collection": "posts",
+        "locale": "en"
+      }],
+      "pattern": "{locale}/posts/{slug}"
+    },
+    {
+      "match": [{
+        "collection": "posts",
+        "locale": "es"
+      }],
+      "pattern": "{locale}/articulos/{slug}"
+    }
+  ],
+
+  "files": [{
+      "src": "content/index_en.md",
+      "name": "index",
+      "uri": "",
+      "ext": "html",
+      "content": "",
+      "locale": "en",
+      "translations": {
+        "en": "content/index_en.md",
+        "es": ""
+      },
+      "layout": "home.html",
+      "slug": "index"
+    },
+    {
+      "src": "content/index_es.md",
+      "name": "index",
+      "uri": "es/",
+      "ext": "html",
+      "content": "",
+      "locale": "es",
+      "translations": {
+        "en": "",
+        "es": "content/index_es.md"
+      },
+      "layout": "home.html",
+      "slug": "index"
+    },
+    {
+      "src": "content/posts/en/first-post.md",
+      "name": "first-post",
+      "uri": "posts/en",
+      "ext": "html",
+      "content": "",
+      "locale": "en",
+      "translations": {
+        "en": "content/posts/en/first-post.md",
+        "es": ""
+      },
+      "title": "My First Post",
+      "collection": "posts",
+      "date": "2012-08-20T00:00:00.000Z",
+      "layout": "post.html",
+      "slug": "my-first-post"
+    },
+    {
+      "src": "content/posts/es/primer-articulo.md",
+      "name": "primer-articulo",
+      "uri": "posts/es",
+      "ext": "html",
+      "content": "",
+      "locale": "es",
+      "translations": {
+        "en": "",
+        "es": "content/posts/es/primer-articulo.md"
+      },
+      "title": "Mi primer artículo",
+      "collection": "posts",
+      "slug": "primer-articulo",
+      "date": "2012-08-20T00:00:00.000Z",
+      "layout": "post.html"
+    }
+  ]
+}

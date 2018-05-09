@@ -89,6 +89,10 @@ function Generator(config) {
         content
       }
 
+      if (file.uri === '.') {
+        file.uri = ''
+      }
+
       // The current file is passed to all the registered plugins
       for (let plugin of this.config.plugins) {
         if (plugin && plugin.run) {

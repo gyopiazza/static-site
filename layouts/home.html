@@ -3,27 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>{{ title }}</title>
-  <meta name="description" content="{{ description }}">
 </head>
 <body>
-  <header>
-    <p>
-      <a href="/">Home</a>
-    </p>
-  </header>
-  <h2>Welcome to the home!</h2>
-  <h1>{{ title }}</h1>
-  <p>{{ description }}</p>
 
-  {{{ contents }}}
+  <h1>{{ locale }}</h1>
 
-  <footer>
-    {{__ 'switch_language_to'}}
-
-    {{#each locales}}
-      {{this}}
-    {{/each}}
-  </footer>
+  {{{ content }}}
 
 </body>
 </html>
