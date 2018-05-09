@@ -7,6 +7,7 @@ module.exports = (config) => {
     }, config)
 
     return {
+        name: 'markdown',
         async run(file, files, state, generator) {
             if (path.extname(file.src) !== '.md') {
                 return file

@@ -7,6 +7,7 @@ module.exports = (config) => {
     }, config)
 
     return {
+        name: 'frontmatter',
         async run(file, files, globals, generator) {
             if (path.extname(file.src) !== '.md') {
                 return file

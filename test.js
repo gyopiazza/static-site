@@ -7,6 +7,7 @@ const handlebars = require('./plugins/handlebars')
 const languages = require('./plugins/languages')
 const permalinks = require('./plugins/permalinks')
 const slug = require('./plugins/slug')
+const collections = require('./plugins/collections')
 
 const generator = new Generator()
 
@@ -15,13 +16,17 @@ generator.use(languages({
   locales: ['en', 'es'],
   defaultLocale: 'en'
 }))
-// generator.use(collections()) // Just add the 'collection' attribute to a set of matches
+generator.use(collections({
+  products: {
+    match: 'products/**/*.md'
+  }
+}))
 generator.use(frontmatter())
 generator.use(slug())
 generator.use(markdown())
 generator.use(handlebars())
 generator.use(permalinks({
-  match: '.md',
+  match: '*.md',
   routes: [
     {
       pattern: '{locale}/{slug}'

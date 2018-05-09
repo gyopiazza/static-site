@@ -1,8 +1,8 @@
 ---
 title: My First Post
 collection: posts
-date: 2012-08-20
-layout: post.html
+date: 2018-05-01
+layout: default.html
 ---
 
 # Heading 1

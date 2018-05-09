@@ -15,6 +15,7 @@ const fs = require('fs')
 const path = require('path')
 const glob = require('glob')
 const async = require('async')
+const micromatch = require('micromatch')
 const utils = require('./utils')
 
 /**
@@ -29,8 +30,9 @@ function Generator(config) {
 
   this.config = Object.assign({}, {
     match: '**/*.md',
-    src: root + '/content/',
+    content: root + '/content/',
     output: root + '/build/',
+    cache: root + '/cache/',
     ignore: ['.', '..', '.DS_Store'],
     layouts: root + '/layouts/',
     defaultLayout: 'default.html',
@@ -41,7 +43,6 @@ function Generator(config) {
 
   this.globals = {}
   this.files = []
-  this._counter = 0
 
   /**
    * Prepare the queue processing
@@ -55,7 +56,7 @@ function Generator(config) {
   }, this.config.concurrency)
 
   /**
-   * Add a plugin to the pipeline
+   * Add a plugin to the transform pipeline
    *
    * @param {object} plugin
    */
@@ -72,9 +73,14 @@ function Generator(config) {
    */
   this.transform = async (filePath, done) => {
     // Skip the file if it matches the 'ignore' array
-    // TODO: change for a more sofisticated pattern matching
+    // TODO: change for a more sofisticated pattern matching (minimatch)
     if (this.config.ignore.indexOf(path.basename(filePath)) > -1) {
       return done()
+    }
+
+    // If the file was previously built, load it from the cache
+    if (this.config.cache) {
+
     }
 
     // Process the file
@@ -83,8 +89,9 @@ function Generator(config) {
       // The current file being processed
       let file = {
         src: filePath,
+        relsrc: path.relative(this.config.content, filePath),
         name: path.basename(filePath, path.extname(filePath)),
-        uri: path.dirname(filePath.replace(this.config.src, '')),
+        uri: path.dirname(filePath.replace(this.config.content, '')),
         ext: 'html',
         content
       }
@@ -124,6 +131,40 @@ function Generator(config) {
   }
 
   /**
+   * Get the plugin object from the installed plugins
+   * It allows to use other plugins from within a plugin
+   *
+   * generator.plugin('plugin-name').someFunction()
+   *
+   * @param {string} plugin The requested plugin name
+   * @return {object} The plugin object or undefined
+   */
+  this.plugin = function (plugin) {
+    return this.config.plugins.find(p => p.name === plugin)
+  }
+
+  /**
+   * Get the plugin object from the installed plugins
+   * It allows to use other plugins from within a plugin
+   *
+   * generator.plugin('plugin-name').someFunction()
+   *
+   * @param {string|array} value The
+   * @return {object} The plugin object or undefined
+   */
+  this.match = function (value, pattern) {
+    value = typeof value === 'string' ? [value] : value
+    return micromatch.match(value, pattern)
+  }
+
+  /**
+   * Access to the micromatch object
+   *
+   * @return {object} The micromatch matcher object
+   */
+  this.matcher = micromatch
+
+  /**
    * Run the build process
    */
   this.build = function (callback) {
@@ -139,8 +180,8 @@ function Generator(config) {
       callback && callback()
     }
 
-    // Find all files in the src folder and queue them for processing
-    utils.walk(this.config.src, async (err, files) => {
+    // Find all files in the content folder and queue them for processing
+    utils.walk(this.config.content, async (err, files) => {
       if (err) throw err
       files = files || []
       this.files = files

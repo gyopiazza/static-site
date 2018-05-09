@@ -58,15 +58,16 @@ const propsMatch = (obj, props) => {
 
 module.exports = (config) => {
   config = Object.assign({}, {
-    match: '.md',
+    match: '*.md',
     index: 'index',
     routes: [],
   }, config)
 
   return {
     name: 'permalinks',
-    async run(file, files, globals, generator) {
-      if (path.extname(file.src) !== config.match) {
+    async run(file, files, globals, x) {
+      // if (path.extname(file.src) !== config.match) {
+      if (!x.match(file.src, config.match)) {
         return file
       }
 

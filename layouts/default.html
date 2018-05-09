@@ -1,22 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ locale }}">
 <head>
   <meta charset="UTF-8" />
-  <title>{{ meta.brand }} {{ meta.model }}</title>
+  <title>{{ title }}</title>
 </head>
 <body>
-  <header>
-    <p>
-      <a href="/">Home</a>
-    </p>
-  </header>
-  <h2>Welcome to the home of cars!</h2>
-  <h1>{{ meta.brand }} {{ meta.model }}</h1>
-  <h2>Available translations: {{{ meta.translations }}}</h2>
 
-  <p>{{__ 'testing uppercase function'}}</p>
+  <h1>{{ title }} ({{ locale }})</h1>
 
   {{{ content }}}
+
+  <p>{{__ 'testing the uppercase function'}}</p>
 
 </body>
 </html>

@@ -130,23 +130,22 @@ function slug(s, opt) {
 }
 
 module.exports = (config) => {
-    config = Object.assign({}, {
-        property: 'title',
-        lowerCase: true
-    }, config)
+  config = Object.assign({}, {
+    property: 'title',
+    lowerCase: true
+  }, config)
 
-    return {
-        name: 'slug',
-        async run(file, files, state, generator) {
-						file.slug = file[config.property] || file.title || file.name
+  return {
+    name: 'slug',
+    async run(file, files, state, generator) {
+      file.slug = file.slug || file[config.property] || file.title || file.name
+      file.slug = slug(file.slug)
 
-            file.slug = slug(file.slug)
+      if (config.lowerCase) {
+        file.slug = file.slug.toLowerCase()
+      }
 
-            if (config.lowerCase) {
-                file.slug = file.slug.toLowerCase()
-            }
-
-            return file
-        }
+      return file
     }
+  }
 }

@@ -23,6 +23,7 @@
     "metalsmith-multi-language": "^0.3.0",
     "metalsmith-permalinks": "^0.5.0",
     "metalsmith-slug": "^0.2.1",
+    "micromatch": "^3.1.10",
     "npm": "^6.0.0",
     "oboe": "^2.1.4",
     "stream-json": "^0.6.1",

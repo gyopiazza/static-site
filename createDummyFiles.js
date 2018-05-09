@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+let counter = 0
 
 const ensureDirectoryExistence = function (filePath) {
   var dirname = path.dirname(filePath);
@@ -19,7 +20,7 @@ function generateRandomFiles() {
     let content = `
         ---
         title: ${fileName}
-        template: home.hbt
+        template: default.html
         ---
         Content: ${fileName}
         `
@@ -36,7 +37,7 @@ function generateRandomFiles() {
 }
 
 function importMockData() {
-  const filePath = 'MOCK_DATA.json'
+  const filePath = 'tests/MOCK_DATA.json'
   let data = fs.readFileSync(filePath, 'utf8')
   data = JSON.parse(data)
 
@@ -63,21 +64,15 @@ This is some content... ${item.brand} - ${item.model}
     ensureDirectoryExistence(destEN)
     ensureDirectoryExistence(destES)
 
-    fs.writeFile(destEN, content, function (err) {
-      if (err) {
-        return console.log(err)
-      }
-    })
-
-    fs.writeFile(destES, content, function (err) {
-      if (err) {
-        return console.log(err)
-      }
-    })
+    fs.writeFileSync(destEN, content)
+    fs.writeFileSync(destES, content)
+    ++counter
+    ++counter
   })
 }
 
-
+console.log('Creating dummy files...')
 importMockData()
 importMockData()
 importMockData()
+console.log(counter + ' files created!')

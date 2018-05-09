@@ -46,6 +46,7 @@ module.exports = (config) => {
                 return file
             }
 
+            // Set the file locale
             file.locale =  generator.globals.defaultLocale
             file.locale = getLocale(file.src, generator.globals.locales, config.filePattern, config.pathPattern)
 

@@ -8,6 +8,7 @@ module.exports = (config) => {
     console.time('Build time')
 
     return {
+        name: 'debug',
         async init(files, globals, generator) {
             console.log('Concurrency:', generator.config.concurrency)
             console.log('Files found:', files.length)
