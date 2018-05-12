@@ -72,13 +72,41 @@ module.exports = (config) => {
       }
 
       // Loop through the routes, the last one that matches is used for the file route
+      let uri = ''
+
+      // console.log('--------')
       config.routes.forEach(route => {
         if (!route.match || propsMatch(file, route.match)) {
-          if (file.name !== config.index) {
-            file.uri = pattern(route.pattern, file)
-          }
+          // if (file.name !== config.index) {
+          //   // if (file.name === 'index') {
+          //   //   console.log(file)
+          //   // }
+          //   uri = pattern(route.pattern, file)
+          //   console.log('NOT INDEX', route.pattern, file.src, file.uri, '...', uri)
+          // } else {
+
+          //   console.log('INDEX', route.pattern, file.src, file.uri, '...', uri)
+          // }
+
+          // if (file.uri !== '') {
+            uri = pattern(route.pattern, file)
+          // }
+
+          // if (file.name === config.index) {
+            // console.log(route.pattern, file.src, file.uri, '...', uri)
+          // }
         }
       })
+
+      // Set the uri to the last pattern that matched
+      file.uri = uri
+
+      // Remove 'index' from the uri
+      // if (file.name === 'index') {
+      //   file.uri = file.uri.substring(0, file.uri.length - 5)
+      // }
+
+
 
       // Set the file name to index for
       file.name = config.index

@@ -58,8 +58,8 @@ layout: default.html
 This is some content... ${item.brand} - ${item.model}
 `
 
-    let destEN = 'content/products/en/' + item.brand + '/' + fileName
-    let destES = 'content/products/es/' + item.brand + '/' + fileName
+    let destEN = 'contents/products/en/' + item.brand + '/' + fileName
+    let destES = 'contents/products/es/' + item.brand + '/' + fileName
 
     ensureDirectoryExistence(destEN)
     ensureDirectoryExistence(destES)

@@ -66,17 +66,27 @@ module.exports = (config) => {
                 }
             })
 
+            // TODO: remove the current language from the src and set that as the uri
+
             // Index handling
             // Default locale will go in 'index.html'
             // Other index-es in '/{locale}/index.html'
             if (/^index/.test(file.name)) {
+
                 if (file.locale === generator.globals.defaultLocale) {
                     file.uri = file.uri.replace(file.locale + '/', '')
-                    file.name = 'index'
-                } else {
+                } else if (file.uri !== '') {
                     file.uri = file.locale + '/'
-                    file.name = 'index'
                 }
+
+                file.name = 'index'
+                // if (file.locale === generator.globals.defaultLocale) {
+                //     file.uri = file.uri.replace(file.locale + '/', '')
+                //     file.name = 'index'
+                // } else {
+                //     file.uri = file.locale + '/'
+                //     file.name = 'index'
+                // }
             }
 
             // Adding a helper function to the globals, to be used in the layouts

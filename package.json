@@ -7,7 +7,9 @@
   },
   "dependencies": {
     "async": "^2.6.0",
+    "better-queue": "^3.8.7",
     "cloth": "^2.1.0",
+    "diskdb": "^0.1.17",
     "glob": "^7.1.2",
     "gray-matter": "^4.0.1",
     "handlebars": "^4.0.11",

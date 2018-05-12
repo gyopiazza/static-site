@@ -5,15 +5,18 @@ module.exports = (collections) => {
     name: 'collections',
     async run(file, files, globals, x) {
 
-			for (const collectionName in collections) {
-				let match = collections[collectionName].match
-					? x.match(file.relsrc, collections[collectionName].match)
+			for (const collection in collections) {
+				let match = collections[collection].match
+					? x.match(file.src, collections[collection].match)
 					: true
 
-					// console.log(match ? 'MATCH!' : 'NO MATCH...', collections[collectionName].match, file.relsrc)
+					// console.log(match ? 'MATCH!' : 'NO MATCH...', collections[collection].match, file.src)
 			}
 
       return file
+    },
+    async end(files, globals, x) {
+
     }
   }
 }
